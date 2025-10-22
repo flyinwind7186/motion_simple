@@ -30,7 +30,7 @@ def encrypt_data(plain: bytes) -> bytes:
     return cipher.encrypt(padded)
 
 # 获取当前时间对应的最大和最小步数
-def get_step_by_time(beijing_time, factor):
+def get_step_by_time(beijing_time):
     hour = beijing_time.hour
     minute = beijing_time.minute
     time_rate = min((hour * 60 + minute) / (22 * 60), 1)
@@ -45,7 +45,7 @@ def main():
     beijing_time = get_beijing_time()
     user = sys.argv[1]
     password = sys.argv[2]
-    min_step, max_step = get_step_by_time(beijing_time, factor)
+    min_step, max_step = get_step_by_time(beijing_time)
     execute(user, password, min_step, max_step)
     
 def execute(user, password, min_step, max_step):
