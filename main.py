@@ -104,8 +104,7 @@ def login(user, password, fake_ip):
         "appname": "com.xiaomi.hm.health",
         "appplatform": "android_phone",
         "x-hm-ekv": "1",
-        "hm-privacy-ceip": "false",
-        "X-Forwarded-For": fake_ip
+        "hm-privacy-ceip": "false"
     }
     login_data = {
         'emailOrPhone': user,
