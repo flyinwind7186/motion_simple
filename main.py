@@ -93,7 +93,7 @@ def login(user, password, fake_ip):
     is_phone = False
     if re.match(r'\d{11}', user):
         is_phone = True
-    if is_phone  and ("+86" in user):
+    if (user.startswith("+86")) or "@" in user:
         user = user
     else:
         user = "+86" + user
