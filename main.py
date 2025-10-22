@@ -12,27 +12,6 @@ import urllib
 import requests
 from Crypto.Cipher import AES
 
-# 获取区域天气情况
-def get_factor_by_weather(area):
-    if area == "NO":
-        print(area == "NO")
-        return 1
-    else:
-        factor_dict = {"多云": 0.9, "阴": 0.8, "小雨": 0.7, "中雨": 0.5, "大雨": 0.4, "暴雨": 0.3, "大暴雨": 0.2,
-                  "特大暴雨": 0.2}
-        url = f'https://wthrcdn.etouch.cn/weather_mini?city={area}'
-        header = {'User-Agent': 'Mozilla/5.0'}
-        r = requests.get(url=url, headers=header)
-        if r.status_code == 200:
-            result = r.text
-            res = json.loads(result)
-            weather = res['data']['forecast'][0]['type']
-            if weather in factor_dict:
-                return factor_dict[weather]
-        else:
-            print("获取天气情况出错")
-        return 1
-
 
 # 获取北京时间
 def get_beijing_time():
@@ -53,31 +32,22 @@ def encrypt_data(plain: bytes) -> bytes:
 # 获取当前时间对应的最大和最小步数
 def get_step_by_time(beijing_time, factor):
     hour = beijing_time.hour
-    min_ratio = max(math.ceil((hour / 3) - 1), 0)
-    max_ratio = math.ceil(hour / 3)
-    min_step = int(3500 * min_ratio * factor)
-    max_step = int(3500 * max_ratio * factor)
-    return min_step, max_step
+    minute = beijing_time.minute
+    time_rate = min((hour * 60 + minute) / (22 * 60), 1)
+    min_step = 16000
+    max_step = 18000
+    return int(time_rate * min_step), int(time_rate * max_step)
 
 
 # 主函数
 def main():
     # 北京时间
     beijing_time = get_beijing_time()
-    users = sys.argv[1]
-    passwords = sys.argv[2]
-    # 开启根据地区天气情况降低步数（默认关闭）
-    open_get_weather = sys.argv[3]
-    # 设置获取天气的地区（上面开启后必填）如：area = "宁波"
-    area = sys.argv[4]
-    factor = 1
-    if open_get_weather == "True":
-        factor = get_factor_by_weather(area)
+    user = sys.argv[1]
+    password = sys.argv[2]
     min_step, max_step = get_step_by_time(beijing_time, factor)
-    user_list = users.split('#')
-    passwd_list = passwords.split('#')
-    for user, passwd in zip(user_list, passwd_list):
-        execute(user, passwd, min_step, max_step)
+    execute(user, password, min_step, max_step)
+    
 def execute(user, password, min_step, max_step):
     fake_ip = get_fake_ip()
     step = str(random.randint(min_step, max_step))
