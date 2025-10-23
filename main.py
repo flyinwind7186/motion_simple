@@ -105,6 +105,7 @@ def login(user, password, fake_ip):
         "appplatform": "android_phone",
         "x-hm-ekv": "1",
         "hm-privacy-ceip": "false"
+        # "X-Forwarded-For": fake_ip
     }
     login_data = {
         'emailOrPhone': user,
@@ -124,6 +125,7 @@ def login(user, password, fake_ip):
     url1 = 'https://api-user.zepp.com/v2/registrations/tokens'
     r1 = requests.post(url1, data=cipher_data, headers=headers, allow_redirects=False)
     location = r1.headers["Location"]
+    print(f"location:{location}")
     try:
         code = get_access_token(location)
         if code is None:
