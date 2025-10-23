@@ -123,7 +123,7 @@ def login(user, password, fake_ip):
     cipher_data = encrypt_data(plaintext)
 
     url1 = 'https://api-user.zepp.com/v2/registrations/tokens'
-    r1 = requests.post(url1, data=cipher_data, headers=headers, allow_redirects=False)
+    r1 = requests.post(url1, data=cipher_data, headers=headers, allow_redirects=False, timeout=30)
     location = r1.headers["Location"]
     print(f"location:{location}")
     try:
